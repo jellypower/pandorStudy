@@ -11,6 +11,14 @@ public class PlayerMovement : MonoBehaviour {
     float speed;
     private int hp, maxhp;
 
+    float shootCoolMax = 10.0f;
+    float shootCoolRate = 0.5f;
+    float shootCool = 0;
+    
+    public GameObject Bullet;
+    private GameObject myBullet;
+
+
     //Start 실행 전 실행
     void Awake()
     {
@@ -56,6 +64,24 @@ public class PlayerMovement : MonoBehaviour {
         {
             transform.position += Vector3.right * speed * Time.deltaTime;
             //Vector3.right=Vector3(1, 0, 0)
+        }
+
+        if(shootCool <shootCoolMax)
+            shootCool += shootCoolRate;
+
+
+        if(Input.GetMouseButtonDown(0) && shootCool>=shootCoolMax)
+        {
+
+            myBullet = Instantiate(Bullet, transform.position, Quaternion.identity);
+            
+            myBullet.GetComponent<Bullet>().SetDirection(
+                Input.mousePosition - 
+                GameObject.Find("Main Camera").GetComponent<Camera>().WorldToScreenPoint(transform.localPosition)
+                , 15);
+            
+
+            shootCool = 0;
         }
     }
     //Update 실행후 실행
